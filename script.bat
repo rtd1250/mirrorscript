@@ -56,6 +56,6 @@ pause
 
 :usb
 echo Launching scrcpy!
-start scrcpy
+start scrcpy -m 1600
 echo Launching sndcpy!
 start sndcpy.bat
