@@ -1,17 +1,62 @@
 @echo off
 echo -------------------------------
-echo simple screen mirroring script
-echo using scrcpy and sndcpy!
+echo Screen mirroring script
+echo v0.4
 echo -------------------------------
 
+set vernow=""
+set vernow=0.4
+
+echo.
 echo Changing the directory...
 cd /D "%~dp0\files"
 
+echo.
+echo Checking for updates...
+del version.txt
+curl --silent -o version.txt https://raw.githubusercontent.com/rtd1250/mirrorscript/main/files/version.txt
+set vernew=""
+set /p vernew=<version.txt
+if exist version.txt (
+  goto compare
+) else (
+  echo.
+  echo Updates can't be checked. Check your internet connection.
+  pause
+  goto adb
+)
+
+:compare
+if %vernow% LSS %vernew% (
+  echo.
+  echo Current version: %vernow%
+  echo New version: %vernew%
+  echo New version available. Download?
+  echo 1 for yes, 2 for no.
+) else (
+  echo.
+  echo Current version: %vernow%
+  echo New version: %vernew%
+  echo Up to date.
+  goto adb
+)
+set /p choiced="Type your choice: "
+if %choiced%==1 (
+  curl -o ..\script.bat https://raw.githubusercontent.com/rtd1250/mirrorscript/main/script.bat
+  exit
+)
+
+:adb
+echo.
 echo some checks...
 if exist adb.exe (
   adb disconnect
   adb kill-server
+  taskkill /IM vlc.exe
+  taskkill /IM scrcpy.exe
+  taskkill /IM sndcpy.bat
 )
+echo.
 
 if exist scrcpy-win64-v1.17.zip (
   echo scrcpy already downloaded, moving on.
@@ -31,31 +76,72 @@ if exist sndcpy-v1.0.zip (
   tar -xf sndcpy-v1.0.zip
 )
 adb start-server
-echo ........
+
+cls
+color 1f
+echo -------------------------------
+echo Screen mirroring script
+echo v0.4
+echo -------------------------------
+echo.
 echo Plug in your phone now and press any key to continue.
-echo ........
+echo.
 pause
-:choice
-set /p mode=Type 1 for USB or 2 for WIFI: 
+
+cls
+echo -------------------------------
+echo Screen mirroring script
+echo v0.4
+echo -------------------------------
+echo.
+echo 1. Screen mirroring
+echo 2. Screen and sound mirroring
+echo.
+set /p sound="Type your choice here: "
+
+cls
+echo -------------------------------
+echo Screen mirroring script
+echo v0.4
+echo -------------------------------
+echo.
+echo 1. USB
+echo 2. Wi-Fi
+echo.
+set /p mode="Type your choice here: "
 if %mode%==1 goto usb
 
-echo ........
+cls
+echo -------------------------------
+echo Screen mirroring script
+echo v0.4
+echo -------------------------------
+echo.
 echo Listing ADB IPs...
 adb shell ip route | gawk "{print $9}"
-echo ........
+echo.
 
 echo You should see your phone's IP (typically starting with 192.xxx) above.
 set /p IP=Type it in here: 
 adb tcpip 5555
 adb connect %IP%
 
-echo ........
+cls
+echo -------------------------------
+echo Screen mirroring script
+echo v0.4
+echo -------------------------------
+echo.
 echo Disconnect the cable now and make sure the phone is unlocked.
-echo ........
+echo.
 pause
 
 :usb
+cls
+color 0f
 echo Launching scrcpy!
 start scrcpy -m 1600
-echo Launching sndcpy!
-start sndcpy.bat
+if %sound%==2 (
+  echo Launching sndcpy!
+  start sndcpy.bat
+)
