@@ -1,11 +1,15 @@
 @echo off
-echo -------------------------------
-echo Screen mirroring script
-echo v0.4
-echo -------------------------------
 
+REM setting the variables once doesn't work sometimes. no idea why
 set vernow=""
 set vernow=0.4
+
+echo -------------------------------
+echo Screen mirroring script
+echo %vernow%
+echo -------------------------------
+
+
 
 echo.
 echo Changing the directory...
@@ -31,6 +35,7 @@ if %vernow% LSS %vernew% (
   echo.
   echo Current version: %vernow%
   echo New version: %vernew%
+  echo.
   echo New version available. Download?
   echo 1 for yes, 2 for no.
 ) else (
@@ -81,7 +86,7 @@ cls
 color 1f
 echo -------------------------------
 echo Screen mirroring script
-echo v0.4
+echo %vernow%
 echo -------------------------------
 echo.
 echo Plug in your phone now and press any key to continue.
@@ -91,7 +96,7 @@ pause
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo v0.4
+echo %vernow%
 echo -------------------------------
 echo.
 echo 1. Screen mirroring
@@ -102,19 +107,30 @@ set /p sound="Type your choice here: "
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo v0.4
+echo %vernow%
 echo -------------------------------
 echo.
 echo 1. USB
 echo 2. Wi-Fi
 echo.
 set /p mode="Type your choice here: "
+
+cls
+echo -------------------------------
+echo Screen mirroring script
+echo %vernow%
+echo -------------------------------
+echo.
+echo Resolution to pass to scrcpy? (-m parameter)
+echo Leave empty if unsure.
+echo.
+set /p res="Max size: "
 if %mode%==1 goto usb
 
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo v0.4
+echo %vernow%
 echo -------------------------------
 echo.
 echo Listing ADB IPs...
@@ -129,7 +145,7 @@ adb connect %IP%
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo v0.4
+echo %vernow%
 echo -------------------------------
 echo.
 echo Disconnect the cable now and make sure the phone is unlocked.
@@ -140,7 +156,12 @@ pause
 cls
 color 0f
 echo Launching scrcpy!
-start scrcpy -m 1600
+if [%res%] ==  [] (
+  start scrcpy
+) else (
+  start scrcpy -m %res%
+)
+
 if %sound%==2 (
   echo Launching sndcpy!
   start sndcpy.bat
