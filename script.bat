@@ -15,10 +15,9 @@ echo -------------------------------
 
 echo.
 echo Checking for updates...
-del version.txt
-curl --silent -o version.txt https://raw.githubusercontent.com/rtd1250/mirrorscript/main/files/version.txt
+curl --silent -o version2.txt https://raw.githubusercontent.com/rtd1250/mirrorscript/main/files/version.txt
 set vernew=""
-set /p vernew=<version.txt
+set /p vernew=<version2.txt
 if exist version.txt (
   goto compare
 ) else (
@@ -38,15 +37,18 @@ if %vernow% LSS %vernew% (
   echo 1 for yes, 2 for no.
 ) else (
   echo.
-  echo Current version: %vernow%
-  echo New version: %vernew%
   echo Up to date.
+  del version2.txt
   goto adb
 )
 set /p choiced="Type your choice: "
 if %choiced%==1 (
+  del version.txt
+  rename version2.txt version.txt
   curl -o ..\script.bat https://raw.githubusercontent.com/rtd1250/mirrorscript/main/script.bat
   exit
+) else (
+  del version2.txt
 )
 
 :adb
