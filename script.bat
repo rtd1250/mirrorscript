@@ -1,19 +1,17 @@
 @echo off
 
+REM changes the directory
+cd /D "%~dp0\files"
+
 REM setting the variables once doesn't work sometimes. no idea why
 set vernow=""
-set vernow=0.4
+set /p vernow=<version.txt
 
 echo -------------------------------
 echo Screen mirroring script
 echo %vernow%
 echo -------------------------------
 
-
-
-echo.
-echo Changing the directory...
-cd /D "%~dp0\files"
 
 echo.
 echo Checking for updates...
