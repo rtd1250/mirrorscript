@@ -63,13 +63,13 @@ if exist adb.exe (
 )
 echo.
 
-if exist scrcpy-win64-v1.18.zip (
+if exist scrcpy-win64-v1.19.zip (
   echo scrcpy already downloaded, moving on.
 ) else (
   echo Downloading scrcpy...
-  curl -L -o scrcpy-win64-v1.18.zip https://github.com/Genymobile/scrcpy/releases/download/v1.18/scrcpy-win64-v1.18.zip
+  curl -L -o scrcpy-win64-v1.19.zip https://github.com/Genymobile/scrcpy/releases/download/v1.19/scrcpy-win64-v1.19.zip
   echo Unpacking scrcpy...
-  tar -xf scrcpy-win64-v1.18.zip
+  tar -xf scrcpy-win64-v1.19.zip
 )
 
 if exist sndcpy-v1.0.zip (
