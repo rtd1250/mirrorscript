@@ -53,7 +53,7 @@ if %choiced%==1 (
 
 :adb
 echo.
-echo some checks...
+echo some checks... If any errors pop up, they're expected.
 if exist adb.exe (
   adb disconnect
   adb kill-server
@@ -63,22 +63,22 @@ if exist adb.exe (
 )
 echo.
 
-if exist scrcpy-win64-v1.19.zip (
+if exist scrcpy-win64-v1.21.zip (
   echo scrcpy already downloaded, moving on.
 ) else (
   echo Downloading scrcpy...
-  curl -L -o scrcpy-win64-v1.19.zip https://github.com/Genymobile/scrcpy/releases/download/v1.19/scrcpy-win64-v1.19.zip
+  curl -L -o scrcpy-win64-v1.21.zip https://github.com/Genymobile/scrcpy/releases/download/v1.21/scrcpy-win64-v1.21.zip
   echo Unpacking scrcpy...
-  tar -xf scrcpy-win64-v1.19.zip
+  tar -xf scrcpy-win64-v1.21.zip
 )
 
-if exist sndcpy-v1.0.zip (
+if exist sndcpy-v1.1.zip (
   echo sndcpy already downloaded, moving on.
 ) else (
   echo Downloading sndcpy...
-  curl -L -o sndcpy-v1.0.zip https://github.com/rom1v/sndcpy/releases/download/v1.0/sndcpy-v1.0.zip
+  curl -L -o sndcpy-v1.1.zip https://github.com/rom1v/sndcpy/releases/download/v1.1/sndcpy-v1.1.zip
   echo Unpacking sndcpy...
-  tar -xf sndcpy-v1.0.zip
+  tar -xf sndcpy-v1.1.zip
 )
 adb start-server
 
@@ -126,6 +126,7 @@ echo Leave empty if unsure.
 echo.
 set /p res="Max size: "
 if %mode%==1 goto usb
+if %sound%==2 ( continue ) else ( goto wifi )
 
 cls
 echo -------------------------------
@@ -133,24 +134,28 @@ echo Screen mirroring script
 echo %vernow%
 echo -------------------------------
 echo.
-echo Listing ADB IPs...
-adb shell ip route | gawk "{print $9}"
-echo.
-
-echo You should see your phone's IP (typically starting with 192.xxx) above.
-set /p IP=Type it in here: 
-adb tcpip 5555
-adb connect %IP%
-
-cls
-echo -------------------------------
-echo Screen mirroring script
-echo %vernow%
-echo -------------------------------
-echo.
-echo Disconnect the cable now and make sure the phone is unlocked.
+echo After you see the device's screen, return here to enable audio capture.
 echo.
 pause
+
+:wifi
+cls
+echo Launching scrcpy!
+if [%res%] ==  [] (
+  start scrcpy --tcpip
+) else (
+  start scrcpy --tcpip -m %res%
+)
+
+if %sound%==2 (
+  echo.
+  echo Unplug USB, and press any key for sound capture.
+  pause
+  color 0f
+  echo Launching sndcpy!
+  start sndcpy.bat
+)
+goto end
 
 :usb
 cls
@@ -166,3 +171,7 @@ if %sound%==2 (
   echo Launching sndcpy!
   start sndcpy.bat
 )
+goto end
+
+:end
+exit
