@@ -11,7 +11,7 @@ set firstLaunch=0
 
 echo -------------------------------
 echo Screen mirroring script
-echo %vernow%
+echo v%vernow%
 echo -------------------------------
 
 
@@ -62,6 +62,19 @@ if exist scrcpy-win64-v1.23.zip (
   set firstLaunch=1
   echo Downloading scrcpy...
   curl -L -o scrcpy-win64-v1.23.zip https://github.com/Genymobile/scrcpy/releases/download/v1.23/scrcpy-win64-v1.23.zip
+  if not exist scrcpy-win64-v1.23.zip (
+    cls
+    color 4F
+    echo -------------------------------
+    echo Screen mirroring script
+    echo v%vernow%
+    echo -------------------------------
+    echo.
+    curl -L -o scrcpy-win64-v1.23.zip https://github.com/Genymobile/scrcpy/releases/download/v1.23/scrcpy-win64-v1.23.zip
+    echo.
+    echo Error: Dependencies can't be downloaded. Please check your internet connection.
+    pause
+    exit 0 )
   echo Unpacking scrcpy...
   tar -xf scrcpy-win64-v1.23.zip
 )
@@ -71,6 +84,19 @@ if exist sndcpy-v1.1.zip (
 ) else (
   echo Downloading sndcpy...
   curl -L -o sndcpy-v1.1.zip https://github.com/rom1v/sndcpy/releases/download/v1.1/sndcpy-v1.1.zip
+  if not exist sndcpy-v1.1.zip (
+    cls
+    color 4F
+    echo -------------------------------
+    echo Screen mirroring script
+    echo v%vernow%
+    echo -------------------------------
+    echo.
+    curl -L -o sndcpy-v1.1.zip https://github.com/rom1v/sndcpy/releases/download/v1.1/sndcpy-v1.1.zip
+    echo.
+    echo Error: Dependencies can't be downloaded. Please check your internet connection.
+    pause
+    exit 0 )
   echo Unpacking sndcpy...
   tar -xf sndcpy-v1.1.zip
 )
@@ -101,10 +127,10 @@ set VLC="C:\Program Files\VideoLAN\VLC\vlc.exe"
 if exist %VLC% ( goto main )
 
 cls
-color 1f
+color 1F
 echo -------------------------------
 echo Screen mirroring script
-echo %vernow%
+echo v%vernow%
 echo -------------------------------
 echo.
 echo Warning - You do not seem to have VLC Media Player installed.
@@ -122,7 +148,7 @@ cls
 color 1f
 echo -------------------------------
 echo Screen mirroring script
-echo %vernow%
+echo v%vernow%
 echo -------------------------------
 echo.
 if %firstLaunch%==1 (
@@ -141,7 +167,7 @@ pause
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo %vernow%
+echo v%vernow%
 echo -------------------------------
 echo.
 echo 1. Screen mirroring
@@ -152,7 +178,7 @@ set /p sound="Type your choice here: "
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo %vernow%
+echo v%vernow%
 echo -------------------------------
 echo.
 echo 1. USB
@@ -163,7 +189,7 @@ set /p mode="Type your choice here: "
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo %vernow%
+echo v%vernow%
 echo -------------------------------
 echo.
 echo Resolution to pass to scrcpy? (-m parameter)
@@ -176,7 +202,7 @@ if %sound%==2 ( continue ) else ( goto wifi )
 cls
 echo -------------------------------
 echo Screen mirroring script
-echo %vernow%
+echo v%vernow%
 echo -------------------------------
 echo.
 echo After you see the device's screen, return here to enable audio capture.
