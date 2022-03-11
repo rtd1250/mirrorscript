@@ -1,11 +1,13 @@
 @echo off
 
-REM changes the directory
+REM Change to working directory
 cd /D "%~dp0\files"
 
-REM setting the variables once doesn't work sometimes. no idea why
-set vernow=""
+REM Set current version
 set /p vernow=<version.txt
+
+REM By default, we assume that this is not our first launch.
+set firstLaunch=0
 
 echo -------------------------------
 echo Screen mirroring script
@@ -16,13 +18,12 @@ echo -------------------------------
 echo.
 echo Checking for updates...
 curl --silent -o version2.txt https://raw.githubusercontent.com/rtd1250/mirrorscript/main/files/version.txt
-set vernew=""
-set /p vernew=<version2.txt
-if exist version.txt (
+if exist version2.txt (
+  set /p vernew=<version2.txt
   goto compare
 ) else (
   echo.
-  echo Updates can't be checked. Check your internet connection.
+  echo Updates can't be checked. Please check your internet connection.
   pause
   goto adb
 )
@@ -53,23 +54,16 @@ if %choiced%==1 (
 
 :adb
 echo.
-echo some checks... If any errors pop up, they're expected.
-if exist adb.exe (
-  adb disconnect
-  adb kill-server
-  taskkill /IM vlc.exe
-  taskkill /IM scrcpy.exe
-  taskkill /IM sndcpy.bat
-)
-echo.
 
-if exist scrcpy-win64-v1.21.zip (
+if exist scrcpy-win64-v1.23.zip (
   echo scrcpy already downloaded, moving on.
 ) else (
+  REM If scrcpy is not downloaded, chances are that this is our first launch
+  set firstLaunch=1
   echo Downloading scrcpy...
-  curl -L -o scrcpy-win64-v1.21.zip https://github.com/Genymobile/scrcpy/releases/download/v1.21/scrcpy-win64-v1.21.zip
+  curl -L -o scrcpy-win64-v1.23.zip https://github.com/Genymobile/scrcpy/releases/download/v1.23/scrcpy-win64-v1.23.zip
   echo Unpacking scrcpy...
-  tar -xf scrcpy-win64-v1.21.zip
+  tar -xf scrcpy-win64-v1.23.zip
 )
 
 if exist sndcpy-v1.1.zip (
@@ -80,7 +74,31 @@ if exist sndcpy-v1.1.zip (
   echo Unpacking sndcpy...
   tar -xf sndcpy-v1.1.zip
 )
-adb start-server
+
+echo.
+echo Some checks...
+
+REM Kill processes associated with scrcpy and sndcpy
+tasklist /fi "ImageName eq scrcpy.exe" 2>NUL | find "scrcpy.exe">NUL
+if %ERRORLEVEL%==0 (
+  taskkill /IM scrcpy.exe
+  echo Stopped scrcpy
+)
+tasklist /fi "ImageName eq vlc.exe" 2>NUL | find "vlc.exe">NUL
+if %ERRORLEVEL%==0 (
+  taskkill /F /IM vlc.exe
+  echo Stopped VLC
+)
+tasklist /fi "ImageName eq adb.exe" 2>NUL | find "adb.exe">NUL
+if %ERRORLEVEL%==0 (
+  adb disconnect
+  adb kill-server
+  echo Stopped ADB
+)
+
+REM Check if VLC is installed
+set VLC="C:\Program Files\VideoLAN\VLC\vlc.exe"
+if exist %VLC% ( goto main )
 
 cls
 color 1f
@@ -89,7 +107,34 @@ echo Screen mirroring script
 echo %vernow%
 echo -------------------------------
 echo.
-echo Plug in your phone now and press any key to continue.
+echo Warning - You do not seem to have VLC Media Player installed.
+echo It's required for sound playback.
+echo If you don't want to use sound capture, feel free to skip this message.
+echo Do you want to download it?
+echo.
+set /p choicev="1 for Yes, 2 for Skip: "
+if %choicev%==1 ( start "" https://www.videolan.org/vlc/ )
+
+
+:main
+adb start-server
+cls
+color 1f
+echo -------------------------------
+echo Screen mirroring script
+echo %vernow%
+echo -------------------------------
+echo.
+if %firstLaunch%==1 (
+  echo Welcome!
+  echo If you are using this tool for the first time, make sure to:
+  echo 1. Unlock your phone
+  echo 2. Connect it using USB
+  echo 3. Accept the pop-up on the phone with "Remember this PC" ticked
+  echo 4. Press any key to continue
+) else (
+  echo Plug in your phone now and press any key to continue.
+)
 echo.
 pause
 
