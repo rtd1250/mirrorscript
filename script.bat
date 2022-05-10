@@ -31,10 +31,7 @@ if exist version2.txt (
 :compare
 if %vernow% LSS %vernew% (
   echo.
-  echo Current version: %vernow%
-  echo New version: %vernew%
-  echo.
-  echo New version available. Download?
+  echo New version %vernew% available. Download?
   echo 1 for yes, 2 for no.
 ) else (
   echo.
@@ -55,14 +52,14 @@ if %choiced%==1 (
 :adb
 echo.
 
-if exist scrcpy-win64-v1.23.zip (
+if exist scrcpy-win64-v1.24.zip (
   echo scrcpy already downloaded, moving on.
 ) else (
   REM If scrcpy is not downloaded, chances are that this is our first launch
   set firstLaunch=1
   echo Downloading scrcpy...
-  curl -L -o scrcpy-win64-v1.23.zip https://github.com/Genymobile/scrcpy/releases/download/v1.23/scrcpy-win64-v1.23.zip
-  if not exist scrcpy-win64-v1.23.zip (
+  curl -L -o scrcpy-win64-v1.24.zip https://github.com/Genymobile/scrcpy/releases/download/v1.24/scrcpy-win64-v1.24.zip
+  if not exist scrcpy-win64-v1.24.zip (
     cls
     color 4F
     echo -------------------------------
@@ -70,13 +67,13 @@ if exist scrcpy-win64-v1.23.zip (
     echo v%vernow%
     echo -------------------------------
     echo.
-    curl -L -o scrcpy-win64-v1.23.zip https://github.com/Genymobile/scrcpy/releases/download/v1.23/scrcpy-win64-v1.23.zip
+    curl -L -o scrcpy-win64-v1.24.zip https://github.com/Genymobile/scrcpy/releases/download/v1.24/scrcpy-win64-v1.24.zip
     echo.
     echo Error: Dependencies can't be downloaded. Please check your internet connection.
     pause
     exit 0 )
   echo Unpacking scrcpy...
-  tar -xf scrcpy-win64-v1.23.zip
+  tar -xf scrcpy-win64-v1.24.zip
 )
 
 if exist sndcpy-v1.1.zip (
