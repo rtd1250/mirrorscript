@@ -73,7 +73,7 @@ if exist scrcpy-win64-v1.25.zip (
     pause
     exit 0 )
   echo Unpacking scrcpy...
-  tar -xf scrcpy-win64-v1.25.zip
+  tar -xf scrcpy-win64-v1.25.zip --strip-components=1
 )
 
 if exist sndcpy-v1.1.zip (
